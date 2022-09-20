@@ -1,0 +1,23 @@
+cproc glfwCreateWindow 5 1
+cproc glfwInit 0 1
+
+class glfw
+  proc Init 0 1
+    (glfwInit)
+    asm "push rax"
+    
+    ret 
+  end
+
+  proc CreateWindow 5 1
+    asm "pop r8d"
+    asm "pop rcx"
+    asm "pop rdx"
+    asm "pop rsi"
+    asm "pop rdi"
+    (glfwCreateWindow)
+    asm "push rax"
+    
+    ret 
+  end
+end
