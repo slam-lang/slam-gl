@@ -1,16 +1,28 @@
 cproc glfwCreateWindow 5 1
 cproc glfwInit 0 1
+cproc glfwPollEvents 0 0
+cproc glfwTerminate 0 0
+cproc glfwWindowShouldClose 1 1
+cproc glfwDestroyWindow 1 0
+
+lnk glfw
 
 class glfw
   proc Init 0 1
     (glfwInit)
     asm "push rax"
     
-    ret 
+    ret
+  end
+  
+  proc Terminate 0 0
+    (glfwTerminate)
+    
+    ret
   end
 
   proc CreateWindow 5 1
-    asm "pop r8d"
+    asm "pop r8"
     asm "pop rcx"
     asm "pop rdx"
     asm "pop rsi"
@@ -20,4 +32,29 @@ class glfw
     
     ret 
   end
+  
+  proc DestroyWindow 1 0
+    asm "pop rdi"
+    asm "xor rax, rax"
+    (glfwDestroyWindow)
+    asm "push rax"
+    
+    ret
+  end
+  
+  proc WindowShouldClose 1 1
+    asm "pop rdi"
+    asm "xor rax, rax"
+    (glfwWindowShouldClose)
+    asm "push rax"
+    
+    ret
+  end
+
+  proc PollEvents 0 0
+    (glfwPollEvents)
+
+    ret
+  end
 end
+

@@ -1,0 +1,34 @@
+inc glfw.slm
+inc stdlib/log.slm
+inc stdlib.slm
+
+var window int.SIZE
+
+proc main 0 0
+  (glfw.Init) ! if [
+    "ERR" "Failed to load glfw" (log.msg)
+    (log.log)
+    1 quit
+  ]
+  640 480 "lol" 0 0 (glfw.CreateWindow)
+  copy NULL == if [
+    "ERR" "Failed to create glfw window" (log.msg)
+    (log.log)
+    1 quit
+  ]
+
+  window swap
+  put disc
+
+  do
+    (glfw.PollEvents)
+
+    window read (glfw.WindowShouldClose) !
+  end
+
+  window read (glfw.DestroyWindow)
+
+  (glfw.Terminate)
+
+  ret
+end
