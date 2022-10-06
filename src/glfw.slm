@@ -7,6 +7,8 @@ cproc glfwMakeContextCurrent 1 0
 cproc glfwDestroyWindow 1 0
 cproc glfwSwapBuffers 1 0
 cproc glfwWindowHint 2 0
+cproc glfwSetWindowSizeCallback 2 0
+cproc glfwSetFramebufferSizeCallback 2 0
 
 lnk glfw
 
@@ -75,6 +77,22 @@ class glfw
     asm "pop rsi"
     asm "pop rdi"
     (glfwWindowHint)
+
+    ret
+  end
+
+  proc SetWindowSizeCallback 2 0
+    asm "pop rsi"
+    asm "pop rdi"
+    (glfwSetWindowSizeCallback)
+
+    ret
+  end
+
+  proc SetFramebufferSizeCallback 2 0
+    asm "pop rsi"
+    asm "pop rdi"
+    (glfwSetFramebufferSizeCallback)
 
     ret
   end

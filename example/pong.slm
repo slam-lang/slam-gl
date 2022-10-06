@@ -14,9 +14,9 @@ class color
 end
 
 class vert
-  prop x 4
-  prop y 4
-  prop z 4
+  prop x 8
+  prop y 8
+  prop z 8
 end
 
 var VBO int.SIZE
@@ -25,28 +25,47 @@ var verts int.SIZE
 var vertshader int.SIZE
 var fragshader int.SIZE
 var shaderprog int.SIZE
-
 var tmp int.SIZE
+
+var winx int.SIZE
+var winy int.SIZE
 
 const TVERTS 3
 
 proc vertshadersrc 0 1
   tmp
-  "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main() {\ngl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}"
+  "#version 330 core\nlayout (location = 0) in ivec3 aPos;\nvoid main() {\ngl_Position = 0.0001 * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}\n"
   put
+  disc tmp
 
   ret
 end
 
 proc fragshadersrc 0 1
   tmp
-  "#version 330 core\nout vec4 FragColor;\nvoid main() {\nFragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n}"
+  "#version 330 core\nout vec4 FragColor;\nvoid main() {\nFragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n}\n"
   put
+  disc tmp
 
   ret
 end
 
+proc onresize 3 0
+  asm "push rdx"
+  asm "push rsi"
+  asm "push rdi"
+  disc
+  winx swap put disc
+  winy swap put disc
+
+  asm "retq"
+  ret
+end
+
 proc main 0 0
+  winx 640 put disc
+  winy 480 put disc
+
   (glfw.Init)
   ! if [
     "ERR" "Failed to load glfw" (log.msg)
@@ -54,7 +73,7 @@ proc main 0 0
     1 quit
   ]
   
-  640 480 "lol" 0 0 (glfw.CreateWindow)
+  winx read winy read "lol" 0 0 (glfw.CreateWindow)
 
   copy NULL == if [
     "ERR" "Failed to create glfw window" (log.msg)
@@ -64,6 +83,8 @@ proc main 0 0
   window swap put disc
 
   window read (glfw.MakeContextCurrent)
+
+  window read onresize (glfw.SetFramebufferSizeCallback)
   
   {setup gl stuff}
   (gl.init)
@@ -73,25 +94,25 @@ proc main 0 0
   1 VBO (gl.GenBuffers)
 
   {create verts}
-  verts vert.SIZE TVERTS * (heap.alloc) put disc
- 
-  verts read 2 vert.SIZE * + vert.z . 0          put disc
-  verts read 2 vert.SIZE * + vert.y . 1056964608 put disc
-  verts read 2 vert.SIZE * + vert.x . 0          put disc
+  verts vert.SIZE TVERTS * (heap.zalloc) put disc
+
+  verts read 2 vert.SIZE * + vert.z .  0   put disc
+  verts read 2 vert.SIZE * + vert.y .  500 put disc
+  verts read 2 vert.SIZE * + vert.x .  0   put disc
   
-  verts read 1 vert.SIZE * + vert.z . 0          put disc
-  verts read 1 vert.SIZE * + vert.y . 3204448256 put disc
-  verts read 1 vert.SIZE * + vert.x . 1056964608 put disc
+  verts read 1 vert.SIZE * + vert.z .  0   put disc
+  verts read 1 vert.SIZE * + vert.y .  500 put disc
+  verts read 1 vert.SIZE * + vert.x . -500 put disc
 
-  verts read 0 vert.SIZE * + vert.z . 0          put disc
-  verts read 0 vert.SIZE * + vert.y . 3204448256 put disc
-  verts read 0 vert.SIZE * + vert.x . 3204448256 put disc
+  verts read 0 vert.SIZE * + vert.z .  0   put disc
+  verts read 0 vert.SIZE * + vert.y . -500 put disc
+  verts read 0 vert.SIZE * + vert.x . -500 put disc
 
-  fragshader 8B30h (gl.CreateShader) put disc
+  fragshader GL_FRAGMENT_SHADER (gl.CreateShader) put disc
   fragshader read 1 (fragshadersrc) NULL (gl.ShaderSource)
   fragshader read (gl.CompileShader)
 
-  vertshader 8B31h (gl.CreateShader) put disc 
+  vertshader GL_VERTEX_SHADER (gl.CreateShader) put disc 
   vertshader read 1 (vertshadersrc) NULL (gl.ShaderSource)
   vertshader read (gl.CompileShader)
 
@@ -99,31 +120,33 @@ proc main 0 0
   shaderprog read vertshader read (gl.AttachShader) 
   shaderprog read fragshader read (gl.AttachShader)
   shaderprog read (gl.LinkProgram)
-  
+
   VAO read (gl.BindVertexArray)
+
+  GL_ARRAY_BUFFER VBO read (gl.BindBuffer)
+  GL_ARRAY_BUFFER 12 3 * verts read GL_STREAM_DRAW (gl.BufferData)
   
-  8892h VBO read (gl.BindBuffer)
-  8892h 12 3 * verts read 88E0h (gl.BufferData)
+  GL_ARRAY_BUFFER 0 (gl.BindBuffer)
 
-  0 3 1408h bool.false 3 4 * 0 (gl.VertexAttribPointer)
+  0 3 GL_INT bool.false 24 0 (gl.VertexAttribPointer)
   0 (gl.EnableVertexAttribArray)
-
-  shaderprog read (gl.UseProgram)
 
   do
     GL_COLOR_BUFFER_BIT (gl.Clear)
-    VAO read (gl.BindVertexArray)
     shaderprog read (gl.UseProgram)
-    4 0 3 (gl.DrawArrays)
+
+    GL_TRIANGLES 0 TVERTS (gl.DrawArrays)
 
     window read (glfw.SwapBuffers)
                 (glfw.PollEvents)
+    0 0 winx read winy read (gl.Viewport) 
     window read (glfw.WindowShouldClose) !
   end
 
   window read (glfw.DestroyWindow)
 
   (glfw.Terminate)
+  
 
   "done" (cstr.println)
   ret
