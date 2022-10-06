@@ -1,2 +1,3 @@
 "src" src
+"gl.slm" lib
 "glfw.slm" lib

@@ -1,0 +1,101 @@
+inc glc.slm
+inc stdlib.slm
+inc stdlib/tables.slm
+inc stdlib/mem.slm
+
+cproc dlopen 2 1
+cproc dlsym 2 1
+cproc dlerror 0 1
+
+lnk OpenGL
+
+class gl
+  const TOTAL 142 {8 * 18}
+  
+  gvar handle int.SIZE
+  gvar procLocs gl.TOTAL
+
+  oper proc tab 1 1
+    int.SIZE *
+    gl.procLocs +
+
+    ret
+  end
+
+  proc init 0 0
+    gl.handle 
+    258
+    "libGL.so.1"
+    asm "pop rdi"
+    asm "pop rsi"
+    (dlopen)
+    asm "push rax"
+
+    put disc
+
+    gl.procLocs
+    gl.TOTAL int.SIZE *
+    (heap.zalloc)
+    put disc
+ 
+    "glXGetProcAddressARB"
+    gl.handle read
+    asm "pop rdi"
+    asm "pop rsi"
+    (dlsym)
+    asm "push rax"
+
+    0 gl.tab swap put disc
+
+    ret
+  end
+  
+  {
+  args: ptr[cstr]
+  returns: 
+  }
+  proc GetProc 1 1
+    copy 0 gl.tab read c(1)r copy NULL != if [
+      swap disc ret
+    ]
+    disc
+  
+    gl.handle read
+    asm "pop rdi"
+    asm "pop rsi"
+    (dlsym)
+    asm "push rax"
+
+    ret
+  end
+
+  proc CheckProc 2 1
+    covr read NULL == if [
+      (gl.GetProc) put
+      ret
+    ]
+    disc
+
+    ret
+  end
+  
+  proc Clear 1 0 1 gl.tab "glClear" (gl.CheckProc) read c(1) ret end
+  proc ClearColor 4 0 2 gl.tab "glClearColor" (gl.CheckProc) read c(4) ret end
+  proc GenBuffers 2 0 3 gl.tab "glGenBuffers" (gl.CheckProc) read c(2) ret end
+  proc BindBuffer 2 0 4 gl.tab "glBindBuffer" (gl.CheckProc) read c(2) ret end
+  proc BufferData 4 0 5 gl.tab "glBufferData" (gl.CheckProc) read c(4) ret end
+  proc CreateShader 1 1 6 gl.tab "glCreateShader" (gl.CheckProc) read c(1)r ret end
+  proc ShaderSource 4 0 7 gl.tab "glShaderSource" (gl.CheckProc) read c(4) ret end
+  proc CompileShader 1 0 8 gl.tab "glCompileShader" (gl.CheckProc) read c(1) ret end
+  proc CreateProgram 0 1 9 gl.tab "glCreateProgram" (gl.CheckProc) read c(0)r ret end
+  proc AttachShader 2 0 10 gl.tab "glAttachShader" (gl.CheckProc) read c(2) ret end
+  proc LinkProgram 1 0 11 gl.tab "glLinkProgram" (gl.CheckProc) read c(1) ret end
+  proc UseProgram 1 0 12 gl.tab "glUseProgram" (gl.CheckProc) read c(1) ret end
+  proc VertexAttribPointer 6 0 13 gl.tab "glVertexAttribPointer" (gl.CheckProc) read c(6) ret end
+  proc EnableVertexAttribArray 1 0 14 gl.tab "glEnableVertexAttribArray" (gl.CheckProc) read c(1) ret end
+  proc DrawArrays 3 0 15 gl.tab "glDrawArrays" (gl.CheckProc) read c(3) ret end
+  proc GenVertexArrays 2 0 16 gl.tab "glGenVertexArrays" (gl.CheckProc) read c(2) ret end
+  proc BindVertexArray 1 0 17 gl.tab "glBindVertexArray" (gl.CheckProc) read c(1) ret end
+
+  {max: 19}
+end

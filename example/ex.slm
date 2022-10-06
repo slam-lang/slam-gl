@@ -1,8 +1,12 @@
 inc glfw.slm
+inc gl.slm
 inc stdlib/log.slm
 inc stdlib.slm
 
+const GL_COLOR_BUFFER_BIT 00004000h
+
 var window int.SIZE
+var clearPtr int.SIZE
 
 proc main 0 0
   (glfw.Init) ! if [
@@ -20,7 +24,16 @@ proc main 0 0
   window swap
   put disc
 
+  window read (glfw.MakeContextCurrent)
+
+  (gl.init)
+
   do
+    GL_COLOR_BUFFER_BIT
+    (gl.Clear)
+
+    window read (glfw.SwapBuffers)
+
     (glfw.PollEvents)
 
     window read (glfw.WindowShouldClose) !

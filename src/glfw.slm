@@ -3,7 +3,10 @@ cproc glfwInit 0 1
 cproc glfwPollEvents 0 0
 cproc glfwTerminate 0 0
 cproc glfwWindowShouldClose 1 1
+cproc glfwMakeContextCurrent 1 0
 cproc glfwDestroyWindow 1 0
+cproc glfwSwapBuffers 1 0
+cproc glfwWindowHint 2 0
 
 lnk glfw
 
@@ -35,24 +38,43 @@ class glfw
   
   proc DestroyWindow 1 0
     asm "pop rdi"
-    asm "xor rax, rax"
     (glfwDestroyWindow)
-    asm "push rax"
+    
+    ret
+  end
+ 
+  proc SwapBuffers 1 0
+    asm "pop rdi"
+    (glfwSwapBuffers)
     
     ret
   end
   
   proc WindowShouldClose 1 1
     asm "pop rdi"
-    asm "xor rax, rax"
     (glfwWindowShouldClose)
     asm "push rax"
     
     ret
   end
 
+  proc MakeContextCurrent 1 0
+    asm "pop rdi"
+    (glfwMakeContextCurrent)
+
+    ret
+  end
+
   proc PollEvents 0 0
     (glfwPollEvents)
+
+    ret
+  end
+
+  proc WindowHint 2 0
+    asm "pop rsi"
+    asm "pop rdi"
+    (glfwWindowHint)
 
     ret
   end

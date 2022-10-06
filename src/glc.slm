@@ -1,0 +1,201 @@
+oper proc discasm 1 0
+  asm "push 0" disc
+
+  ret
+end
+
+oper proc c(0) 1 0
+  asm "pop rbx"
+  asm "call rbx"
+  discasm
+
+  ret
+end
+
+oper proc c(0)r 1 1
+  asm "pop rbx"
+  asm "call rbx"
+  asm "push rax"
+
+  ret
+end
+
+oper proc c(1) 2 0
+  asm "pop rbx"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(1)r 2 1
+  asm "pop rbx"
+  asm "pop rdi"
+  asm "call rbx"
+  asm "push rax"
+  discasm
+
+  ret
+end
+
+oper proc c(2) 3 0
+  asm "pop rbx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(2)r 3 1
+  asm "pop rbx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  asm "push rax"
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(3) 4 0
+  asm "pop rbx"
+  asm "pop rdx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(3)r 4 1
+  asm "pop rbx"
+  asm "pop rdx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  asm "push rax"
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(4) 5 0
+  asm "pop rbx"
+  asm "pop rcx"
+  asm "pop rdx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(4)r 5 1
+  asm "pop rbx"
+  asm "pop rdx"
+  asm "pop rcx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call bx"
+  asm "push rax"
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(5) 6 0
+  asm "pop rbx"
+  asm "pop r8"
+  asm "pop rcx"
+  asm "pop rdx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(5)r 6 1
+  asm "pop rbx"
+  asm "pop r8"
+  asm "pop rdx"
+  asm "pop rcx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call bx"
+  asm "push rax"
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(6) 7 0
+  asm "pop rbx"
+  asm "pop r9"
+  asm "pop r8"
+  asm "pop rcx"
+  asm "pop rdx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
+
+oper proc c(6)r 7 1
+  asm "pop rbx"
+  asm "pop r9"
+  asm "pop r8"
+  asm "pop rdx"
+  asm "pop rcx"
+  asm "pop rsi"
+  asm "pop rdi"
+  asm "call rbx"
+  asm "push rax"
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+  discasm
+
+  ret
+end
